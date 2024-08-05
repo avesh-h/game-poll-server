@@ -1,5 +1,5 @@
-import { google } from "googleapis";
-import nodemailer from "nodemailer";
+const { google } = require("googleapis");
+const nodemailer = require("nodemailer");
 
 // constants
 const clientId = process.env.CLIENT_ID;
@@ -17,7 +17,7 @@ const oAuth2Client = new google.auth.OAuth2(
 oAuth2Client.setCredentials({ refresh_token: oAuthRefreshToken });
 
 //we can send subject of email and body
-export async function sendMail({ mailTo, subject, text }) {
+async function sendMail({ mailTo, subject, text }) {
   try {
     const accessToken = await oAuth2Client.getAccessToken();
 
@@ -48,3 +48,5 @@ export async function sendMail({ mailTo, subject, text }) {
     return { error };
   }
 }
+
+module.exports = { sendMail };
