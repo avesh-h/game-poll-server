@@ -9,6 +9,9 @@ const { authRoutes } = require("./src/routes/authRoutes");
 const { connectDb } = require("./src/config/dbConfig");
 const { sendMail } = require("./src/utils/sendEmail");
 const client = require("./src/config/redisConfig");
+const { profileRoutes } = require("./src/routes/profileRoutes");
+const cookieParser = require("cookie-parser");
+// const { receiveMessageFromQueue } = require("./src/utils/queue");
 
 dotenv.config();
 
@@ -21,12 +24,14 @@ const server = http.createServer(app);
 //Middlewares
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
 
 //DB config
 connectDb();
 
 //Routes
 app.use("/", authRoutes);
+app.use("/api/profile", profileRoutes);
 //Profile APIS
 
 //SUBSCRIBE EXAMPLE from messageQueue example
