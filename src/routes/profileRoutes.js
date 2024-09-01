@@ -1,5 +1,5 @@
 const express = require("express");
-const { authToken } = require("../middlewares/auth");
+// const { authToken } = require("../middlewares/auth");
 const {
   getProfile,
   updateProfile,
