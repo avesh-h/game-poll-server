@@ -4,10 +4,13 @@ const {
   getProfile,
   updateProfile,
 } = require("../controllers/profileControllers");
+const { upload } = require("../middlewares/multer.middleware");
 
 const router = express.Router();
 
-router.route("/:profileId").get(getProfile).put(updateProfile);
-// router.put("/:profileId", updateProfile);
+router
+  .route("/:profileId")
+  .get(getProfile)
+  .put(upload.single("profileImage"), updateProfile);
 
 module.exports = { profileRoutes: router };

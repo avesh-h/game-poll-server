@@ -1,6 +1,8 @@
 const User = require("../schema/userSchema");
 const { httpStatusCode } = require("../utils/httpStatusCodes");
 const bcrypt = require("bcrypt");
+const fs = require("node:fs").promises;
+const uploadFileOnCloudinary = require("../config/cloudinaryConfig");
 
 const getProfile = async (req, res) => {
   const { profileId } = req?.params;
@@ -30,8 +32,19 @@ const getProfile = async (req, res) => {
 //Update profile
 const updateProfile = async (req, res, next) => {
   const { profileId } = req?.params;
-  const { oldPassword, newPassword } = req?.body;
+  const { oldPassword, newPassword, firstName, lastName, phone } = JSON.parse(
+    req.body.payloadObj
+  );
+
   try {
+    let profileImg;
+    if (req?.file) {
+      const uploadedImg = await uploadFileOnCloudinary(req?.file?.path);
+      if (uploadedImg?.url) {
+        profileImg = uploadedImg?.url;
+        await fs.unlink(req?.file?.path);
+      }
+    }
     if (profileId) {
       const existedUser = await User.findOne({ _id: profileId });
       if (!existedUser) {
@@ -58,10 +71,11 @@ const updateProfile = async (req, res, next) => {
         { _id: profileId },
         {
           $set: {
-            firstName: req?.body?.firstName,
-            lastName: req?.body?.lastName,
-            phone: req?.body?.phone,
+            firstName,
+            lastName,
+            phone,
             ...(hashedPassword ? { password: hashedPassword } : {}),
+            ...(profileImg ? { photo: profileImg } : {}),
           },
         }
       );

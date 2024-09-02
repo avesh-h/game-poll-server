@@ -11,6 +11,7 @@ const { sendMail } = require("./src/utils/sendEmail");
 const client = require("./src/config/redisConfig");
 const { profileRoutes } = require("./src/routes/profileRoutes");
 const cookieParser = require("cookie-parser");
+const bodyParser = require("body-parser");
 // const { receiveMessageFromQueue } = require("./src/utils/queue");
 
 dotenv.config();
@@ -22,8 +23,10 @@ const app = express();
 const server = http.createServer(app);
 
 //Middlewares
+// Parse URL-encoded bodies (HTML forms)
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
-app.use(express.json());
+app.use(bodyParser.json());
 app.use(cookieParser());
 
 //DB config
