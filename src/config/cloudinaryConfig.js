@@ -13,15 +13,12 @@ cloudinary.config({
 
 module.exports = async function uploadFileOnCloudinary(filePath) {
   try {
-    console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaa");
     if (!filePath) {
       //File not found!
       return null;
     }
     // Upload an image function
     const uploadResult = await cloudinary.uploader.upload(filePath);
-
-    console.log("uploadresultttttttttttt", uploadResult);
 
     return uploadResult;
 
