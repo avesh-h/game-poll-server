@@ -31,12 +31,14 @@ const getProfile = async (req, res) => {
 
 //Update profile
 const updateProfile = async (req, res, next) => {
+  console.log("00000000000000000000000000");
   const { profileId } = req?.params;
   const { oldPassword, newPassword, firstName, lastName, phone } = JSON.parse(
     req.body.payloadObj
   );
 
   try {
+    console.log("1111111111111111111111111111");
     let profileImg;
     if (req?.file) {
       const uploadedImg = await uploadFileOnCloudinary(req?.file?.path);
@@ -45,6 +47,7 @@ const updateProfile = async (req, res, next) => {
         await fs.unlink(req?.file?.path);
       }
     }
+    console.log("22222222222222222222222222222");
     if (profileId) {
       const existedUser = await User.findOne({ _id: profileId });
       if (!existedUser) {

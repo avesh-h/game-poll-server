@@ -13,12 +13,15 @@ cloudinary.config({
 
 module.exports = async function uploadFileOnCloudinary(filePath) {
   try {
+    console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaa");
     if (!filePath) {
       //File not found!
       return null;
     }
     // Upload an image function
     const uploadResult = await cloudinary.uploader.upload(filePath);
+
+    console.log("uploadresultttttttttttt", uploadResult);
 
     return uploadResult;
 
@@ -51,7 +54,7 @@ module.exports = async function uploadFileOnCloudinary(filePath) {
 
     //   console.log(autoCropUrl);
   } catch (error) {
-    console.log("ERROR::::", error);
+    console.log("ERROR::::::::::::::::::::", error);
     //We need to remove file in the upload of the image fail because we don't want to keep that file into our server
     fs.unlinkSync(filePath);
     return null;
