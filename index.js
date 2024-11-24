@@ -138,10 +138,59 @@ server.listen(3002, () => {
 });
 
 //Use the socket instance
-// const io = initializeSocket(server);
+const io = initializeSocket(server);
 
-// io.on("connection", (socket) => {
-//   socket.on("createGame", (data) => {
-//     console.log("data", data);
-//   });
-// });
+io.on("connection", (socket) => {
+  socket.on("join_room", ({ gameId }) => {
+    socket.join(gameId);
+
+    // Checks if the socket is in the room
+    // const sockets = io.sockets.adapter.rooms.get(gameId);
+  });
+
+  socket.on("update_players_list", ({ gameDetails, player, action }) => {
+    if (action === "remove") {
+      // Remove the player from the game
+      gameDetails.members = gameDetails.members.map((member) => {
+        if (member.id === player.id) {
+          return {
+            team: member.team,
+            ...("playerIndex" in member
+              ? {
+                  playerIndex: member.playerIndex,
+                }
+              : {}),
+            ...("memberIndex" in member
+              ? {
+                  memberIndex: member.memberIndex,
+                }
+              : {}),
+          };
+        }
+        return member;
+      });
+    } else {
+      // Update and adding new player to the game
+      gameDetails.members[player?.memberIndex || player?.playerIndex] = player;
+    }
+
+    // Emit the event to all players in the game room
+    // io.in(gameDetails._id).emit("updated_game_details", {
+    //   gameDetails,
+    // });
+
+    // sending to all clients in 'game' room(channel) except sender
+    socket.broadcast.to(gameDetails._id).emit("updated_game_details", {
+      gameDetails,
+    });
+  });
+
+  socket.on("leave_room", ({ gameId }) => {
+    //Leave the room
+    socket.leave(gameId);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("user disconnected");
+  });
+});
